@@ -2,7 +2,7 @@
   "name": "gyp-builder",
   "version": "0.0.1",
   "author": "Mike Vegeto <michael.vegeto@gmail.com>",
-  "description": "A simple way to ask the user for command line input",
+  "description": "A way to build gyp files programmatically",
   "main": "./gyp-builder",
   "engines": {
     "node": ">=0.8.0"
