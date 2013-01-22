@@ -25,6 +25,8 @@
     "url": "http://github.com/ZECTBynmo/gyp-builder.git"
   },
   "dependencies": {
-    "cjson": "~0.2.1"
+    "cjson": "~0.2.1",
+    "ares": "0.0.4",
+    "stdask": "0.0.3"
   }
 }
