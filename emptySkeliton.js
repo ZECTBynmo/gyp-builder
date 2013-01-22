@@ -11,16 +11,6 @@ var skeliton = {
     'targets': [
 
     ],
-    'conditions': [
-      ['OS=="linux"', {
-
-      }],
-      ['OS=="win"', {
-
-      }, { // OS != "win"
-
-      }],
-    ],
 }
 
 exports.skeliton = skeliton;
