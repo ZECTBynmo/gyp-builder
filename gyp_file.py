@@ -5,6 +5,7 @@ import shlex
 import sys
 import getopt
 
+## Grab the relevant directories
 script_dir = os.path.dirname(__file__)
 project_root  = os.path.normpath(script_dir)
 
