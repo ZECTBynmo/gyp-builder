@@ -12,26 +12,33 @@
 */
 //////////////////////////////////////////////////////////////////////////
 // Node.js Exports
-exports.createBuilder = function( name, isNode ) { return new Builder(name, isNode); }
+exports.createBuilder = function( name, isNode, outputPath ) { return new Builder(name, isNode, outputPath); }
 
 //////////////////////////////////////////////////////////////////////////
 // Namespace (lol)
-var DEBUG = true;
-var log = function( text ) { if(DEBUG) console.log(text); };
+var DEBUG = true,
+	log = function( text, isImportant ) { 
+		if(DEBUG && isImportant) {
+			console.log("\n******************************************")
+			console.log("* " + text)
+			console.log("******************************************\n")
+		} else if(DEBUG) {
+			console.log(text); };
+		}			
 
-var skeliton = require( __dirname + "/emptySkeliton.js").skeliton,
+var emptySkeliton = require( __dirname + "/emptySkeliton.js").skeliton,
 	fs = require("fs"),
+	ares = require("ares").ares;
 	ask = require("stdask").ask;
 
 
 //////////////////////////////////////////////////////////////////////////
 // Constructor
-function Builder( name, isNode ) {
-	this.gypObject = skeliton;
-	this.isNode = isNode;
-	this.name = name;
-
-	//log( this.gypObject );
+function Builder( name, isNode, outputPath ) {
+	this.gypObject = emptySkeliton;
+	this.isNode = isNode || false;		// Default to non-node configs
+	this.name = name || "binding";		// Default our name to binding for node.js
+	this.outputPath = outputPath || process.cwd() + "/" + this.name + "/";
 } // end builder()
 
 
@@ -74,6 +81,22 @@ Builder.prototype.getTarget = function( name ) {
 
 //////////////////////////////////////////////////////////////////////////
 // Returns a copy of the target matching some name
+Builder.prototype.build = function() {
+	log( "CALLING INTO PYTHON GYP SCRIPTS", true );
+
+	var strCommand = "python " 
+					+ __dirname + "/gyp_file.py " 	// Script
+					+ this.name + " " 				// Project (output) name
+					+ process.cwd() + "/" + this.name;	// Location of gyp file
+
+	log( "Calling gyp_file.py with: " + strCommand );
+	
+	ares( strCommand, DEBUG );
+} // end build()
+
+
+//////////////////////////////////////////////////////////////////////////
+// Returns a copy of the target matching some name
 Builder.prototype.setTarget = function( target ) {
 	var targets = this.gypObject["targets"],
 		hasFoundTarget = false;
@@ -93,14 +116,10 @@ Builder.prototype.setTarget = function( target ) {
 
 //////////////////////////////////////////////////////////////////////////
 // Write a gyp file to disk 
-Builder.prototype.writeGypFile = function( dir ) {
+Builder.prototype.writeGypFile = function() {
 	var _this = this;
 
-	if( dir === undefined ) {
-		dir = __dirname + "/" + this.name + "/";
-	}
-
-	var path = dir;
+	var path = this.outputPath;
 
 	if( this.isNode ) {
 		path += "binding.gyp";
@@ -125,7 +144,7 @@ Builder.prototype.writeGypFile = function( dir ) {
 	// module. If not, create it.
 	try {
 	    // Query the entry
-	    stats = fs.lstatSync( dir );
+	    stats = fs.lstatSync( _this.outputPath );
 
 	    log( "Project folder already exists" );
 
@@ -134,10 +153,10 @@ Builder.prototype.writeGypFile = function( dir ) {
 	        writeFile( path );
 	    }
 	} catch( error ) {
-		log( "Creating directory: " + dir );
+		log( "Creating directory: " + _this.outputPath );
 
 		// Create the directory
-		fs.mkdir( dir, function(error) {
+		fs.mkdir( _this.outputPath, function(error) {
 			if( error === null ) {
 				writeFile( path );
 			} else { 
