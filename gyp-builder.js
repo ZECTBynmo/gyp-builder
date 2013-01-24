@@ -87,7 +87,7 @@ Builder.prototype.build = function() {
 	var strCommand = "python " 
 					+ __dirname + "/gyp_file.py " 	// Script
 					+ this.name + " " 				// Project (output) name
-					+ process.cwd() + "/" + this.name;	// Location of gyp file
+					+ this.outputPath;				// Location of gyp file
 
 	log( "Calling gyp_file.py with: " + strCommand );
 	
