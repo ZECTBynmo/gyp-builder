@@ -81,7 +81,7 @@ Builder.prototype.getTarget = function( name ) {
 
 //////////////////////////////////////////////////////////////////////////
 // Returns a copy of the target matching some name
-Builder.prototype.build = function() {
+Builder.prototype.build = function( callback ) {
 	log( "CALLING INTO PYTHON GYP SCRIPTS", true );
 
 	var strCommand = "python " 
@@ -91,7 +91,7 @@ Builder.prototype.build = function() {
 
 	log( "Calling gyp_file.py with: " + strCommand );
 	
-	ares( strCommand, DEBUG );
+	ares( strCommand, DEBUG, callback );
 } // end build()
 
 
